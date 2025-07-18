@@ -1,0 +1,20 @@
+---
+---
+
+@import "minima";
+
+/* 测试CSS */
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+
+.home-intro {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 50px;
+  margin: 20px auto;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
