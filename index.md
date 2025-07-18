@@ -22,6 +22,4 @@ layout: home
   </div>
 </div>
 
-## ✨ 最新文章
-
 ---
