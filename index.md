@@ -6,7 +6,7 @@ layout: home
 <div class="home-intro">
   <h1>💕 欢迎来到我的个人网站 💕</h1>
   <p>这里记录着我的生活、想法和对Z的无尽爱意</p>
-  <p>愿每一个美好的瞬间都被珍藏在这里</p>
+  <p>每一个美好的瞬间都被我悄悄珍藏在这里</p>
   
   <!-- 情侣头像 -->
   <div class="couple-avatars">
