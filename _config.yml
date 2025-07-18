@@ -2,3 +2,5 @@ theme: minima
 title: midouzha's personal website
 description: This is intended for Z and i love her
 author: midouzha
+include:
+  - assets
