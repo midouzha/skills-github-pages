@@ -7,7 +7,7 @@ layout: home
   <h1>💕 欢迎来到我的个人网站 💕</h1>
   <p>这里记录着我的生活、想法和对Z的无尽爱意</p>
   <p>愿每一个美好的瞬间都被珍藏在这里</p>
-  <a href="{{ '/assets/zhouyangyang.jpg' | relative_url }}" class="btn">查看我的照片</a>
+  <a href="{{ '/assets/zhouyangyang.jpg' | relative_url }}" class="btn" target="_blank">查看我的照片</a>
 </div>
 
 ## ✨ 最新文章

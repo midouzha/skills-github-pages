@@ -3,28 +3,18 @@ title: 💕 Midouzha's Personal Website
 description: 记录生活的美好瞬间，专属于Z的温暖小屋 ✨
 author: midouzha
 email: your-email@example.com
-baseurl: "" # 如果你的站点在子目录中，请设置这个值
-url: "https://midouzha.github.io/skills-github-pages" # 你的站点URL
+baseurl: "/skills-github-pages" # GitHub Pages 项目页面需要这个
+url: "https://midouzha.github.io" # 你的 GitHub Pages 基础URL
 
 # 社交媒体链接
 github_username: midouzha
-# twitter_username: your_twitter
-# linkedin_username: your_linkedin
 
 # 网站设置
 show_excerpts: true
-plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
 
 # 包含文件
 include:
   - assets
-
-# 分页设置
-paginate: 5
-paginate_path: "/page:num/"
 
 # Markdown 设置
 markdown: kramdown
