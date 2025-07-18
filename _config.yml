@@ -1,8 +1,8 @@
 theme: minima
-title: 💕 Midouzha's Personal Website
-description: 记录生活的美好瞬间，专属于Z的温暖小屋 ✨
+title: 💕 Midouzha的个人网站
+description: 记录生活的美好瞬间，专属于Midouzha和Z的温暖小屋 ✨
 author: midouzha
-email: your-email@example.com
+email: 2313670@mail.nankai.edu.cn
 baseurl: "/skills-github-pages" # GitHub Pages 项目页面需要这个
 url: "https://midouzha.github.io" # 你的 GitHub Pages 基础URL
 
