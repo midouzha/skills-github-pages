@@ -1,5 +1,4 @@
 ---
-title: This is Midouzha's first website
 layout: home
 ---
 
