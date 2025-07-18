@@ -2,12 +2,14 @@
 
 /* 基础样式 */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Helvetica Neue", Arial, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   background-attachment: fixed;
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
+  font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
 /* 改善文字对比度 - 为所有文章列表内容添加卡片背景 */
@@ -195,6 +197,8 @@ body::before {
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
   z-index: 1;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
+  letter-spacing: 0.05em;
 }
 
 .home-intro p {
@@ -203,6 +207,8 @@ body::before {
   margin-bottom: 20px;
   position: relative;
   z-index: 1;
+  line-height: 1.8;
+  font-weight: 400;
 }
 
 /* 情侣头像样式 */
@@ -368,6 +374,14 @@ body::before {
   color: rgba(255, 105, 180, 0.3);
 }
 
+.bottom-quote p {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
+  font-size: 1.2em;
+  line-height: 1.8;
+  color: #555;
+  letter-spacing: 0.03em;
+}
+
 /* 文章卡片样式 */
 .post {
   background: rgba(255, 255, 255, 0.9);
@@ -399,6 +413,9 @@ body::before {
   margin: 0;
   color: #667eea;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
 }
 
 .post-meta {
@@ -409,6 +426,30 @@ body::before {
 
 .post-content {
   padding: 40px;
+  line-height: 1.8;
+  font-size: 1.1em;
+  color: #444;
+  letter-spacing: 0.02em;
+}
+
+/* 中文文章内容优化 */
+.post-content h1, 
+.post-content h2, 
+.post-content h3, 
+.post-content h4, 
+.post-content h5, 
+.post-content h6 {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
+  color: #667eea;
+  margin: 1.5em 0 1em 0;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+
+.post-content p {
+  margin-bottom: 1.2em;
+  text-align: justify;
   line-height: 1.8;
 }
 
@@ -521,6 +562,10 @@ blockquote p {
   color: #666;
   font-size: 1.1em;
   line-height: 1.6;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-align: center;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
 }
 
 /* 页脚样式 */
