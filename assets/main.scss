@@ -13,6 +13,27 @@ body {
   position: relative;
 }
 
+/* 改善文字对比度 - 为所有文章列表内容添加卡片背景 */
+.home h2, 
+.post-list,
+.feed-subscribe {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.home h2 {
+  margin-top: 0;
+  color: #667eea;
+  text-align: center;
+  font-weight: 700;
+}
+
 /* 装饰背景 */
 body::before {
   content: '';
@@ -187,6 +208,78 @@ body::before {
   z-index: 1;
 }
 
+/* 情侣头像样式 */
+.couple-avatars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 30px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.avatar-container {
+  text-align: center;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.avatar-container:nth-child(3) {
+  animation-delay: 1s;
+}
+
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  object-fit: cover;
+  transition: all 0.3s ease;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.avatar-img:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.3);
+}
+
+.avatar-label {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #667eea;
+  font-size: 1.1em;
+  text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+}
+
+.love-heart {
+  font-size: 2.5em;
+  animation: heartBeat 1.5s ease-in-out infinite;
+  color: #ff69b4;
+  text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+}
+
 /* 按钮样式 */
 .btn {
   display: inline-block;
@@ -262,6 +355,22 @@ body::before {
   transform: rotate(180deg);
 }
 
+/* 底部引用特殊样式 */
+.bottom-quote {
+  margin: 60px 0 20px 0;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  animation: slideUp 1.5s ease-out;
+}
+
+.bottom-quote::before {
+  color: rgba(255, 105, 180, 0.3);
+}
+
+.bottom-quote::after {
+  color: rgba(255, 105, 180, 0.3);
+}
+
 /* 文章卡片样式 */
 .post {
   background: rgba(255, 255, 255, 0.9);
@@ -308,21 +417,32 @@ body::before {
 
 /* 文章列表样式 */
 .post-list-item {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  margin-bottom: 25px;
-  padding: 30px;
+  margin-bottom: 20px;
+  padding: 25px;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.2);
   animation: slideUp 0.6s ease-out;
+  list-style: none;
+}
+
+.post-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
 
 .post-list-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.post-list-item h3 {
+  margin: 10px 0;
 }
 
 .post-list-item h3 a {
@@ -334,6 +454,37 @@ body::before {
 
 .post-list-item h3 a:hover {
   color: #764ba2;
+}
+
+.post-meta {
+  color: #888;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+/* RSS订阅链接样式 */
+.feed-subscribe {
+  text-align: center;
+  padding: 20px;
+}
+
+.feed-subscribe a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.feed-subscribe a:hover {
+  color: #764ba2;
+}
+
+.svg-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
 }
 
 /* 图片样式 */
@@ -431,6 +582,21 @@ blockquote p {
     font-size: 1em;
   }
   
+  .couple-avatars {
+    gap: 20px;
+    flex-direction: column;
+  }
+  
+  .couple-avatars .love-heart {
+    order: -1;
+    font-size: 2em;
+  }
+  
+  .avatar-img {
+    width: 100px;
+    height: 100px;
+  }
+  
   .post-content, .post-header {
     padding: 25px 20px;
   }
@@ -444,7 +610,7 @@ blockquote p {
     font-size: 0.9em;
   }
   
-  .decorative-quote {
+  .decorative-quote, .bottom-quote {
     margin: 20px 15px;
     padding: 25px 20px;
   }
@@ -457,6 +623,13 @@ blockquote p {
   .page-content::before,
   .page-content::after {
     display: none;
+  }
+  
+  .home h2, 
+  .post-list,
+  .feed-subscribe {
+    margin: 15px;
+    padding: 20px;
   }
 }
 
@@ -471,5 +644,18 @@ blockquote p {
   
   .site-title {
     font-size: 1.5em;
+  }
+  
+  .couple-avatars {
+    gap: 15px;
+  }
+  
+  .avatar-img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .love-heart {
+    font-size: 1.8em;
   }
 }

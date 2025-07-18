@@ -7,15 +7,21 @@ layout: home
   <h1>💕 欢迎来到我的个人网站 💕</h1>
   <p>这里记录着我的生活、想法和对Z的无尽爱意</p>
   <p>愿每一个美好的瞬间都被珍藏在这里</p>
-  <a href="{{ '/assets/zhouyangyang.jpg' | relative_url }}" class="btn" target="_blank">✨ 查看我的照片 ✨</a>
+  
+  <!-- 情侣头像 -->
+  <div class="couple-avatars">
+    <div class="avatar-container">
+      <img src="{{ '/assets/sheep_head.webp' | relative_url }}" alt="Midouzha" class="avatar-img">
+      <div class="avatar-label">Midouzha</div>
+    </div>
+    <div class="love-heart">💕</div>
+    <div class="avatar-container">
+      <img src="{{ '/assets/z_con.jpg' | relative_url }}" alt="Z" class="avatar-img">
+      <div class="avatar-label">Z</div>
+    </div>
+  </div>
 </div>
 
 ## ✨ 最新文章
 
 ---
-
-<div class="decorative-quote">
-  <p style="font-style: italic; color: #7f8c8d; text-align: center; font-size: 1.1rem; line-height: 1.6;">
-    想我的话，不妨偶尔来转转，万一更新了呢，那是我也想你的证明
-  </p>
-</div>
