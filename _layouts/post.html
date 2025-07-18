@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+<article class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title | escape }}</h1>
+    <p class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        📅 {{ page.date | date: "%Y年%m月%d日" }}
+      </time>
+      {% if page.author %}
+        • 👤 {{ page.author }}
+      {% endif %}
+      {% if page.categories.size > 0 %}
+        • 📁 
+        {% for category in page.categories %}
+          <span class="category">{{ category }}</span>{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+      {% endif %}
+    </p>
+  </header>
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  {% if page.tags.size > 0 %}
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+      <h4 style="margin-bottom: 15px; color: #6c757d;">🏷️ 标签</h4>
+      {% for tag in page.tags %}
+        <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 5px 12px; border-radius: 15px; margin: 3px; font-size: 0.9rem;">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</article>
