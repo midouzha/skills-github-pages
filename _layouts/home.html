@@ -9,6 +9,13 @@ layout: default
 
   {{ content }}
 
+  <!-- 底部引用 - 移到这里，放在情头卡片与内容卡片之间 -->
+  <div class="decorative-quote bottom-quote">
+    <p style="font-style: italic; color: #7f8c8d; text-align: center; font-size: 1.1rem; line-height: 1.6;">
+      想我的话，不妨偶尔来转转，万一更新了呢，那是我也想你的证明
+    </p>
+  </div>
+
   {% assign posts = site.posts | where_exp: "item", "item.url != page.url" %}
   {%- if posts.size > 0 -%}
     {%- if page.list_title -%}
@@ -31,12 +38,5 @@ layout: default
       {%- endfor -%}
     </ul>
   {%- endif -%}
-
-  <!-- 底部引用 -->
-  <div class="decorative-quote bottom-quote">
-    <p style="font-style: italic; color: #7f8c8d; text-align: center; font-size: 1.1rem; line-height: 1.6;">
-      想我的话，不妨偶尔来转转，万一更新了呢，那是我也想你的证明
-    </p>
-  </div>
 
 </div>
