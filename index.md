@@ -27,6 +27,26 @@ layout: home
       <div class="avatar-label">Z</div>
     </div>
   </div>
+</div>
+
+<!-- 倒计时小工具 -->
+<div class="countdown-card">
+  <div class="countdown-title">with周洋洋已经</div>
+  <div id="countdown-days" class="countdown-days">-- 天</div>
+</div>
+
+<script>
+// 纯前端倒计时，Jekyll+GitHub Pages兼容
+function updateCountdown() {
+  var startDate = new Date('2025-05-26T00:00:00');
+  var now = new Date();
+  var diffTime = now - startDate;
+  var days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  document.getElementById('countdown-days').textContent = days + ' 天';
+}
+updateCountdown();
+setInterval(updateCountdown, 60 * 60 * 1000);
+</script>
 
     </div>
   </div>
