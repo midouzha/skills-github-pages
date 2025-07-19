@@ -1,39 +1,86 @@
-/* 倒计时卡片样式 */
-.countdown-card {
-  margin: 32px auto 0 auto;
-  max-width: 340px;
-  background: rgba(255,255,255,0.97);
+/* 情侣头像内的倒计时组件样式 */
+.countdown-widget {
+  margin: 35px 0 20px 0;
+  padding: 25px 20px 18px 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 248, 255, 0.95));
+  border: 2px solid rgba(102, 126, 234, 0.15);
   border-radius: 18px;
-  box-shadow: 0 6px 24px rgba(102,126,234,0.13);
-  border: 1.5px solid #e0e7ff;
-  padding: 28px 0 18px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeInUp 1.2s cubic-bezier(.68,-0.55,.27,1.55);
-}
-
-.countdown-title {
-  font-size: 1.15em;
-  color: #764ba2;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: 0.08em;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08), inset 0 1px 3px rgba(255, 255, 255, 0.8);
   text-align: center;
-}
-.countdown-days {
-  font-size: 2.3em;
-  color: #667eea;
-  font-weight: bold;
-  margin-top: 8px;
-  text-shadow: 0 2px 12px rgba(102,126,234,0.10);
-  animation: popIn 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+  animation: slideInFromBottom 1.5s cubic-bezier(.68, -0.55, .27, 1.55);
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
-  80% { opacity: 1; transform: translateY(-6px) scale(1.03); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+.countdown-widget::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmerCountdown 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerCountdown {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes slideInFromBottom {
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.9); 
+  }
+  70% { 
+    opacity: 1; 
+    transform: translateY(-5px) scale(1.02); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+.countdown-widget .countdown-title {
+  font-size: 1.2em;
+  color: #A855F7;
+  font-weight: 700;
+  margin-bottom: 15px;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 2;
+}
+
+.countdown-widget .countdown-days {
+  font-size: 2.8em;
+  color: #8B5CF6;
+  font-weight: 800;
+  text-shadow: 0 3px 12px rgba(139, 92, 246, 0.2);
+  animation: bounceIn 2s cubic-bezier(.68, -0.55, .27, 1.55);
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes bounceIn {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.3); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.05); 
+  }
+  70% { 
+    transform: scale(0.9); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
 }
 /* 两侧小组件布局 */
 
@@ -129,7 +176,7 @@
 /* 基础样式 */
 body {
   font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Helvetica Neue", Arial, sans-serif !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 25%, #C084FC 50%, #DDD6FE 75%, #F3E8FF 100%) !important;
   background-attachment: fixed !important;
   min-height: 100vh !important;
   line-height: 1.6;
@@ -154,7 +201,7 @@ body {
 
 .home h2 {
   margin-top: 0;
-  color: #667eea;
+  color: #8B5CF6;
   text-align: center;
   font-weight: 700;
 }
@@ -229,7 +276,7 @@ body::before {
 }
 
 .site-title, .site-title:visited {
-  color: #667eea !important;
+  color: #8B5CF6 !important;
   font-weight: 700;
   font-size: 1.8em;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -237,7 +284,7 @@ body::before {
 }
 
 .site-title:hover {
-  color: #764ba2 !important;
+  color: #A855F7 !important;
   transform: scale(1.05);
 }
 
@@ -249,7 +296,7 @@ body::before {
 }
 
 .site-nav .page-link:hover {
-  color: #667eea !important;
+  color: #8B5CF6 !important;
   transform: translateY(-2px);
 }
 
@@ -260,7 +307,7 @@ body::before {
   height: 2px;
   bottom: -5px;
   left: 50%;
-  background: #667eea;
+  background: #8B5CF6;
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
@@ -316,7 +363,7 @@ body::before {
 }
 
 .home-intro h1 {
-  color: #667eea;
+  color: #8B5CF6;
   font-size: 2.5em;
   margin-bottom: 25px;
   font-weight: 700;
@@ -370,13 +417,13 @@ body::before {
 
 .avatar-img:hover {
   transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.3);
 }
 
 .avatar-label {
   margin-top: 10px;
   font-weight: 600;
-  color: #667eea;
+  color: #8B5CF6;
   font-size: 1.1em;
   text-shadow: 0 2px 4px rgba(255,255,255,0.8);
 }
@@ -384,8 +431,8 @@ body::before {
 .love-heart {
   font-size: 2.5em;
   animation: heartBeat 1.5s ease-in-out infinite;
-  color: #ff69b4;
-  text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+  color: #C084FC;
+  text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
 }
 
 @keyframes bounce {
@@ -405,7 +452,7 @@ body::before {
     box-shadow: 0 8px 25px rgba(0,0,0,0.2);
   }
   50% {
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
   }
 }
 
@@ -413,13 +460,13 @@ body::before {
 .btn {
   display: inline-block;
   padding: 15px 30px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #8B5CF6, #A855F7);
   color: white;
   text-decoration: none;
   border-radius: 50px;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -438,7 +485,7 @@ body::before {
 
 .btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
   color: white;
   text-decoration: none;
 }
@@ -467,7 +514,7 @@ body::before {
   top: -10px;
   left: 20px;
   font-size: 4em;
-  color: rgba(102, 126, 234, 0.2);
+  color: rgba(139, 92, 246, 0.2);
   font-weight: bold;
   line-height: 1;
 }
@@ -478,7 +525,7 @@ body::before {
   bottom: -30px;
   right: 20px;
   font-size: 4em;
-  color: rgba(102, 126, 234, 0.2);
+  color: rgba(139, 92, 246, 0.2);
   font-weight: bold;
   line-height: 1;
   transform: rotate(180deg);
@@ -488,16 +535,16 @@ body::before {
 .bottom-quote {
   margin: 60px 0 20px 0;
   background: rgba(255, 255, 255, 0.95);
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  border: 2px solid rgba(139, 92, 246, 0.2);
   animation: slideUp 1.5s ease-out;
 }
 
 .bottom-quote::before {
-  color: rgba(255, 105, 180, 0.3);
+  color: rgba(192, 132, 252, 0.3);
 }
 
 .bottom-quote::after {
-  color: rgba(255, 105, 180, 0.3);
+  color: rgba(192, 132, 252, 0.3);
 }
 
 .bottom-quote p {
@@ -528,7 +575,7 @@ body::before {
 }
 
 .post-header {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
   padding: 40px;
   text-align: center;
 }
@@ -537,7 +584,7 @@ body::before {
   font-size: 2em;
   font-weight: 700;
   margin: 0;
-  color: #667eea;
+  color: #8B5CF6;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
   letter-spacing: 0.03em;
@@ -566,7 +613,7 @@ body::before {
 .post-content h5, 
 .post-content h6 {
   font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", serif;
-  color: #667eea;
+  color: #8B5CF6;
   margin: 1.5em 0 1em 0;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -610,14 +657,14 @@ body::before {
 }
 
 .post-list-item h3 a {
-  color: #667eea;
+  color: #8B5CF6;
   text-decoration: none;
   transition: color 0.3s ease;
   font-weight: 600;
 }
 
 .post-list-item h3 a:hover {
-  color: #764ba2;
+  color: #A855F7;
 }
 
 .post-meta {
@@ -633,14 +680,14 @@ body::before {
 }
 
 .feed-subscribe a {
-  color: #667eea;
+  color: #8B5CF6;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .feed-subscribe a:hover {
-  color: #764ba2;
+  color: #A855F7;
 }
 
 .svg-icon {
@@ -665,7 +712,7 @@ body::before {
 
 .post-content img:hover {
   transform: scale(1.02) rotate(1deg);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
 }
 
 /* 引用样式 */
@@ -679,7 +726,7 @@ blockquote {
   font-style: italic;
   margin: 30px 0;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #8B5CF6;
   position: relative;
 }
 
@@ -711,7 +758,7 @@ blockquote p {
 }
 
 .site-footer a:hover {
-  color: #667eea;
+  color: #8B5CF6;
 }
 
 /* 基础动画 */
