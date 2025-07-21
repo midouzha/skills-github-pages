@@ -9,14 +9,18 @@ layout: home
   <p>这里不写坏情绪，只写饱满的喜欢</p>
   <!-- 情侣头像 -->
   <div class="couple-avatars">
-    <div class="avatar-container">
+    <div class="avatar-container" onclick="showBubble('midouzha')">
       <img src="{{ '/assets/sheep_head.webp' | relative_url }}" alt="Midouzha" class="avatar-img">
       <div class="avatar-label">Midouzha</div>
+      <!-- 气泡容器 -->
+      <div id="bubble-midouzha" class="speech-bubble midouzha-bubble"></div>
     </div>
     <div class="love-heart">💕</div>
-    <div class="avatar-container">
+    <div class="avatar-container" onclick="showBubble('z')">
       <img src="{{ '/assets/z_con.jpg' | relative_url }}" alt="Z" class="avatar-img">
       <div class="avatar-label">Z</div>
+      <!-- 气泡容器 -->
+      <div id="bubble-z" class="speech-bubble z-bubble"></div>
     </div>
   </div>
   
@@ -38,6 +42,30 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 60 * 60 * 1000);
+
+// 气泡特效功能
+var midouzhaTexts = ['姐姐~', '喜欢姐姐~', '姐姐最漂亮啦💕', '好想姐姐', '求求姐姐啦'];
+var zTexts = ['老公', '嘻嘻！', '好嘟💕', '霉素哒~', '哼哼哼'];
+
+function showBubble(target) {
+  var bubbleId = 'bubble-' + target;
+  var bubble = document.getElementById(bubbleId);
+  var texts = target === 'midouzha' ? midouzhaTexts : zTexts;
+  
+  // 随机选择文字
+  var randomText = texts[Math.floor(Math.random() * texts.length)];
+  
+  // 设置气泡文字
+  bubble.textContent = randomText;
+  
+  // 显示气泡
+  bubble.classList.add('show');
+  
+  // 1秒后隐藏气泡
+  setTimeout(function() {
+    bubble.classList.remove('show');
+  }, 1000);
+}
 </script>
 
 ---
