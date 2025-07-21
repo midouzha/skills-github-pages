@@ -4,9 +4,9 @@ layout: home
 
 <div class="home-intro">
   <h1>💕 欢迎来到我们的赛博小家 💕</h1>
-  <p>这里记录着我们的生活、想法和对Z的无尽爱意</p>
-  <p>每一个美好的瞬间都被我悄悄珍藏在这里</p>
-  
+  <p>这里记录着我的生活、想法和对Z的无尽爱意</p>
+  <p>每一个美好的点滴被我悄悄珍藏在这里</p>
+  <p>这里不写坏情绪，只写饱满的喜欢</p>
   <!-- 情侣头像 -->
   <div class="couple-avatars">
     <div class="avatar-container">
