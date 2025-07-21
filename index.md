@@ -51,6 +51,7 @@ function showBubble(target) {
   var bubbleId = 'bubble-' + target;
   var bubble = document.getElementById(bubbleId);
   var texts = target === 'midouzha' ? midouzhaTexts : zTexts;
+  var avatarContainer = bubble.parentElement;
   
   // 随机选择文字
   var randomText = texts[Math.floor(Math.random() * texts.length)];
@@ -58,13 +59,19 @@ function showBubble(target) {
   // 设置气泡文字
   bubble.textContent = randomText;
   
+  // 添加头像点击反馈效果
+  avatarContainer.style.transform = 'scale(0.95)';
+  setTimeout(function() {
+    avatarContainer.style.transform = '';
+  }, 150);
+  
   // 显示气泡
   bubble.classList.add('show');
   
-  // 1秒后隐藏气泡
+  // 1.5秒后隐藏气泡（稍微延长显示时间）
   setTimeout(function() {
     bubble.classList.remove('show');
-  }, 1000);
+  }, 1500);
 }
 </script>
 

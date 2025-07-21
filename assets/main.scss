@@ -297,30 +297,42 @@ body::before {
   animation: bounce 2s ease-in-out infinite;
   position: relative; /* 为气泡定位做准备 */
   cursor: pointer; /* 显示手型光标 */
+  transition: transform 0.15s ease; /* 添加过渡效果 */
 }
 
 .avatar-container:nth-child(3) {
   animation-delay: 1s;
 }
 
+.avatar-container:hover {
+  transform: scale(1.02); /* 轻微的悬停效果 */
+}
+
+.avatar-container:active {
+  transform: scale(0.98); /* 点击时的压缩效果 */
+}
+
 /* 气泡样式 */
 .speech-bubble {
   position: absolute;
-  top: -60px;
+  top: -80px; /* 调整位置，离头像更远一些 */
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 12px 20px; /* 增加内边距 */
+  border-radius: 25px; /* 增加圆角 */
+  font-size: 16px; /* 增大字体 */
+  font-weight: 600; /* 加粗字体 */
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   white-space: nowrap;
   z-index: 100;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); /* 增强阴影和发光 */
+  border: 2px solid rgba(255,255,255,0.3); /* 添加白色边框 */
+  backdrop-filter: blur(10px); /* 添加背景模糊 */
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .speech-bubble::after {
@@ -329,49 +341,75 @@ body::before {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border: 8px solid transparent;
+  border: 10px solid transparent; /* 增大箭头 */
   border-top-color: #764ba2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); /* 给箭头添加阴影 */
 }
 
 /* 显示气泡的状态 */
 .speech-bubble.show {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(-10px);
-  animation: bubbleFloat 1s ease-out;
+  transform: translateX(-50%) translateY(-15px); /* 更明显的浮动效果 */
+  animation: bubbleFloat 1.2s ease-out;
 }
 
-/* Midouzha的气泡样式 */
+/* Midouzha的气泡样式 - 温暖粉色系 */
 .midouzha-bubble {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8e9b 50%, #ffc3d2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.4), 0 0 25px rgba(255, 255, 255, 0.3);
 }
 
 .midouzha-bubble::after {
-  border-top-color: #fecfef;
+  border-top-color: #ffc3d2;
+  border-width: 10px;
 }
 
-/* Z的气泡样式 */
+/* Z的气泡样式 - 清新蓝绿系 */
 .z-bubble {
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a8edea 100%);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 30px rgba(79, 172, 254, 0.4), 0 0 25px rgba(255, 255, 255, 0.3);
 }
 
 .z-bubble::after {
-  border-top-color: #fed6e3;
+  border-top-color: #a8edea;
+  border-width: 10px;
 }
 
-/* 气泡浮动动画 */
+/* 气泡浮动动画 - 增强版 */
 @keyframes bubbleFloat {
   0% {
-    transform: translateX(-50%) translateY(10px) scale(0.8);
+    transform: translateX(-50%) translateY(20px) scale(0.6);
     opacity: 0;
   }
-  50% {
-    transform: translateX(-50%) translateY(-15px) scale(1.05);
+  30% {
+    transform: translateX(-50%) translateY(-20px) scale(1.1);
+    opacity: 0.8;
   }
-  100% {
-    transform: translateX(-50%) translateY(-10px) scale(1);
+  60% {
+    transform: translateX(-50%) translateY(-12px) scale(1.05);
     opacity: 1;
   }
+  100% {
+    transform: translateX(-50%) translateY(-15px) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 添加一个轻微的摇摆动画 */
+@keyframes bubbleWiggle {
+  0%, 100% { transform: translateX(-50%) translateY(-15px) rotate(0deg); }
+  25% { transform: translateX(-50%) translateY(-15px) rotate(-1deg); }
+  75% { transform: translateX(-50%) translateY(-15px) rotate(1deg); }
+}
+
+.speech-bubble.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-15px);
+  animation: bubbleFloat 1.2s ease-out, bubbleWiggle 2s ease-in-out infinite 1.2s;
 }
 
 .avatar-img {
@@ -875,13 +913,14 @@ blockquote p {
   
   /* 移动端气泡样式调整 */
   .speech-bubble {
-    top: -50px;
-    font-size: 12px;
-    padding: 6px 12px;
+    top: -70px; /* 适配移动端位置 */
+    font-size: 14px; /* 移动端字体稍小 */
+    padding: 10px 16px; /* 移动端内边距 */
+    border-radius: 20px;
   }
   
   .speech-bubble::after {
-    border-width: 6px;
+    border-width: 8px;
   }
   
   .post-content, .post-header {
