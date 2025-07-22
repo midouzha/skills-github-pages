@@ -354,27 +354,27 @@ body::before {
   animation: bubbleFloat 1.2s ease-out;
 }
 
-/* Midouzha的气泡样式 - 温暖粉色系 */
+/* Midouzha的气泡样式 - 清新蓝绿系 */
 .midouzha-bubble {
-  background: linear-gradient(135deg, #ff6b9d 0%, #ff8e9b 50%, #ffc3d2 100%);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.4), 0 0 25px rgba(255, 255, 255, 0.3);
-}
-
-.midouzha-bubble::after {
-  border-top-color: #ffc3d2;
-  border-width: 10px;
-}
-
-/* Z的气泡样式 - 清新蓝绿系 */
-.z-bubble {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a8edea 100%);
   border: 2px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 30px rgba(79, 172, 254, 0.4), 0 0 25px rgba(255, 255, 255, 0.3);
 }
 
-.z-bubble::after {
+.midouzha-bubble::after {
   border-top-color: #a8edea;
+  border-width: 10px;
+}
+
+/* Z的气泡样式 - 温暖粉色系 */
+.z-bubble {
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8e9b 50%, #ffc3d2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.4), 0 0 25px rgba(255, 255, 255, 0.3);
+}
+
+.z-bubble::after {
+  border-top-color: #ffc3d2;
   border-width: 10px;
 }
 
