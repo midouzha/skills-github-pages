@@ -185,12 +185,14 @@
                 var SUPABASE_ANON_KEY = '{{ site.supabase_anon_key | default: "" }}';
                 var TABLE = '{{ site.supabase_table | default: "comments" }}';
                 var RATE_LIMIT = Number('{{ site.supabase_rate_limit_seconds | default: 15 }}') || 15;
-                if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
-                  var errEl = document.getElementById('supabase-comment-error');
-                  if(errEl){ errEl.style.display='block'; errEl.textContent = 'Supabase 未配置，请填写站点配置。'; }
-                  console.warn('Supabase 未配置：supabase_url / supabase_anon_key');
-                  return;
-                }
+                try{
+                  if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
+                    var errEl = document.getElementById('supabase-comment-error');
+                    if(errEl){ errEl.style.display='block'; errEl.textContent = 'Supabase 未配置，请填写站点配置。'; }
+                    console.warn('Supabase 未配置：supabase_url / supabase_anon_key');
+                    return;
+                  }
+                }catch(e){ console.error('Supabase config check error', e); return; }
 
                 function api(path, method, body){
                   return fetch(SUPABASE_URL + path, {
@@ -201,19 +203,31 @@
                       'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
                     },
                     body: body ? JSON.stringify(body) : undefined
-                  }).then(function(r){ return r.json(); });
+                  }).then(function(r){
+                    // return both json and status for better error handling
+                    return r.text().then(function(text){
+                      var json = null;
+                      try{ json = text ? JSON.parse(text) : null; }catch(e){ json = text; }
+                      return { status: r.status, body: json };
+                    });
+                  });
                 }
 
                 function slug(){ return location.pathname; }
 
                 function load(){
                   var q = '/rest/v1/' + TABLE + '?select=*&slug=eq.'+encodeURIComponent(slug())+'&order=created_at.desc';
-                  return api(q, 'GET');
+                  return api(q, 'GET').then(function(r){ if(r.status>=200 && r.status<300) return r.body; throw r; });
                 }
 
                 function post(obj){
-                  var q = '/rest/v1/' + TABLE;
-                  return api(q, 'POST', obj);
+                  var q = '/rest/v1/' + TABLE + '?return=representation';
+                  return api(q, 'POST', obj).then(function(r){ if(r.status>=200 && r.status<300) return r.body; throw r; });
+                }
+
+                function del(id){
+                  var q = '/rest/v1/' + TABLE + '?id=eq.'+encodeURIComponent(id);
+                  return api(q, 'DELETE').then(function(r){ if(r.status>=200 && r.status<300) return r.body; throw r; });
                 }
 
                 function formatTime(ts){ var d = new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
@@ -230,34 +244,60 @@
                       var author = item.name ? escapeHtml(item.name) : '匿名';
                       var time = item.created_at ? formatTime(item.created_at) : '';
                       div.innerHTML = '<div class="meta"><div class="meta-left"><div class="avatar-circle">'+initials+'</div><div><div class="comment-author">'+author+'</div><div class="comment-time">'+time+'</div></div></div></div>' +
-                                    '<div class="comment-content">'+escapeHtml(item.content)+'</div>';
+                                  '<div class="comment-content">'+escapeHtml(item.content)+'</div>';
+                    // add delete button if id exists
+                    if(item.id){
+                      var btn = document.createElement('button');
+                      btn.className = 'btn-ghost';
+                      btn.textContent = '删除';
+                      btn.style.marginTop = '8px';
+                      btn.addEventListener('click', function(){
+                        if(!confirm('确认删除该评论？（如果删除失败，请在 Supabase 控制台删除）')) return;
+                        del(item.id).then(function(resp){
+                          // success, reload
+                          load().then(function(res){ render(res); }).catch(function(e){ console.error(e); });
+                        }).catch(function(err){
+                          console.error('删除错误', err);
+                          var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='删除失败（可能没有权限），请在 Supabase 控制台删除'; }
+                        });
+                      });
+                      var wrapper = document.createElement('div'); wrapper.style.marginTop='8px'; wrapper.appendChild(btn);
+                      div.appendChild(wrapper);
+                    }
                       container.appendChild(div);
                     });
                 }
 
                 function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-                // Load initial
-                load().then(function(res){ if(res && !res.code) render(res); else console.warn(res); }).catch(function(e){ console.error(e); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='加载留言失败'; } });
+                // Load initial - run after DOM ready to avoid Edge timing issues
+                function initLoad(){
+                  load().then(function(res){ render(res); }).catch(function(e){ console.error(e); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='加载留言失败'; } });
+                }
+                if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initLoad); else initLoad();
 
                 // Simple rate limit stored in sessionStorage
                 function allowed(){ try{ var t = sessionStorage.getItem('supabase_last_post_' + slug()) || 0; return (Date.now() - Number(t)) / 1000 > RATE_LIMIT; }catch(e){ return true; } }
                 function mark(){ try{ sessionStorage.setItem('supabase_last_post_' + slug(), String(Date.now())); }catch(e){} }
 
-                document.getElementById('supabase-comment-submit').addEventListener('click', function(){
+                var submitBtn = document.getElementById('supabase-comment-submit');
+                if(submitBtn) submitBtn.addEventListener('click', function(){
                   if(!allowed()){ return alert('请稍后再发，防止刷屏'); }
                   var text = document.getElementById('supabase-comment-input').value.trim();
                   var name = document.getElementById('supabase-comment-name').value.trim();
                   if(!text) return alert('留言不能为空');
                   var payload = { slug: slug(), content: text, name: name || null };
                   post(payload).then(function(resp){
-                    if(resp && (Array.isArray(resp) ? resp.length : resp.id || resp[0])){
-                      mark(); document.getElementById('supabase-comment-input').value=''; document.getElementById('supabase-comment-name').value='';
-                      var statusEl = document.getElementById('supabase-comment-status'); if(statusEl){ statusEl.textContent = '提交成功'; setTimeout(function(){ statusEl.textContent = '留言将匿名保存到远程数据库。'; }, 2000); }
-                      // reload
-                      load().then(function(res){ if(res && !res.code) render(res); });
-                    }else{ console.warn('submit response', resp); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='提交失败（服务器返回异常）'; } }
-                  }).catch(function(err){ console.error(err); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='提交失败（网络或权限问题）'; } });
+                    mark();
+                    var input = document.getElementById('supabase-comment-input'); if(input) input.value='';
+                    var nameInput = document.getElementById('supabase-comment-name'); if(nameInput) nameInput.value='';
+                    var statusEl = document.getElementById('supabase-comment-status'); if(statusEl){ statusEl.textContent = '提交成功'; setTimeout(function(){ statusEl.textContent = '留言将匿名保存到远程数据库。'; }, 2000); }
+                    // reload
+                    load().then(function(res){ render(res); }).catch(function(e){ console.error(e); });
+                  }).catch(function(err){
+                    console.error('提交错误', err);
+                    var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='提交失败（网络或权限问题）'; }
+                  });
                 });
 
               })();
