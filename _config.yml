@@ -24,13 +24,6 @@ highlighter: rouge
 safe: true
 incremental: false
 
-# Utterances (基于 GitHub Issues 的评论系统)
-# 在部署前把下面的仓库替换为 形如 `用户名/仓库名`，例如 `midouzha/skills-github-pages`
-utterances_repo: "midouzha/skills-github-pages" # e.g. "owner/repo"
-# 可选：issue 映射策略（url, pathname, title, issue-number），默认 pathname
-utterances_issue_term: "pathname"
-# 可选：主题，参考 https://utteranc.es/ 可设置如 github-light, github-dark, preferred-color-scheme
-utterances_theme: "github-light"
 
 # 评论系统选择：可选值 "utterances"、"supabase" 或空（不启用评论）。
 comments_system: "supabase" # "utterances" or "supabase" or ""

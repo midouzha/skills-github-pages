@@ -126,18 +126,16 @@
                   if(!container) return;
                   if(list.length === 0){ container.innerHTML = '<p style="color:#666;">还没有留言，写下你的第一条吧！</p>'; return; }
                   container.innerHTML = '';
-                  list.forEach(function(item, idx){
-                    var div = document.createElement('div');
-                    div.style.padding = '10px';
-                    div.style.border = '1px solid #e1e4e8';
-                    div.style.borderRadius = '6px';
-                    div.style.marginBottom = '8px';
-                    var who = item.name ? ('<strong>'+escapeHtml(item.name)+'</strong>') : '<strong>匿名</strong>';
-                    div.innerHTML = '<div style="font-size:0.95rem; margin-bottom:6px;">'+who+' · <span style="color:#666; font-size:0.85rem;">'+formatTime(item.ts)+'</span></div>' +
-                                  '<div style="white-space:pre-wrap;">'+escapeHtml(item.text)+'</div>' +
-                                  '<div style="margin-top:6px;"><button data-idx="'+idx+'" class="local-delete">删除</button></div>';
-                    container.appendChild(div);
-                  });
+                    list.forEach(function(item, idx){
+                      var div = document.createElement('div');
+                      div.className = 'comment-item';
+                      var initials = item.name ? item.name.trim().slice(0,1).toUpperCase() : '匿';
+                      var author = item.name ? escapeHtml(item.name) : '匿名';
+                      div.innerHTML = '<div class="meta"><div class="meta-left"><div class="avatar-circle">'+initials+'</div><div><div class="comment-author">'+author+'</div><div class="comment-time">'+formatTime(item.ts)+'</div></div></div></div>' +
+                                    '<div class="comment-content">'+escapeHtml(item.text)+'</div>' +
+                                    '<div style="margin-top:6px;"><button data-idx="'+idx+'" class="local-delete btn-ghost">删除</button></div>';
+                      container.appendChild(div);
+                    });
                   Array.from(container.querySelectorAll('.local-delete')).forEach(function(btn){
                     btn.addEventListener('click', function(){
                       var i = Number(this.getAttribute('data-idx'));
@@ -163,16 +161,21 @@
               })();
             </script>
           {%- elsif site.comments_system == 'supabase' -%}
-            <div id="comments" style="margin-top: 2rem;">
+            <div id="comments" class="comment-panel">
               <h3>留言</h3>
               <div id="supabase-comments">
-                <div id="supabase-comment-list" style="margin-bottom:1rem;"></div>
-                <textarea id="supabase-comment-input" rows="4" style="width:100%;" placeholder="在此输入留言..."></textarea>
-                <div style="margin-top:0.5rem; display:flex; gap:8px;">
-                  <input id="supabase-comment-name" placeholder="署名（可选）" style="flex:0 0 200px;" />
-                  <button id="supabase-comment-submit">提交留言</button>
+                <div id="supabase-comment-list" class="comment-list"></div>
+                <div class="comment-row">
+                  <textarea id="supabase-comment-input" class="comment-input" rows="4" placeholder="在此输入留言..."></textarea>
                 </div>
-                <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">留言将匿名保存到远程数据库。</p>
+                <div class="comment-row" style="margin-top:8px;">
+                  <input id="supabase-comment-name" class="comment-name" placeholder="署名（可选）" />
+                  <div style="display:flex; gap:8px;">
+                    <button id="supabase-comment-submit" class="btn-primary">提交</button>
+                  </div>
+                </div>
+                <div id="supabase-comment-status" class="comment-note">留言将匿名保存到远程数据库。</div>
+                <div id="supabase-comment-error" class="comment-error" style="display:none;"></div>
               </div>
             </div>
 
@@ -183,6 +186,8 @@
                 var TABLE = '{{ site.supabase_table | default: "comments" }}';
                 var RATE_LIMIT = Number('{{ site.supabase_rate_limit_seconds | default: 15 }}') || 15;
                 if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
+                  var errEl = document.getElementById('supabase-comment-error');
+                  if(errEl){ errEl.style.display='block'; errEl.textContent = 'Supabase 未配置，请填写站点配置。'; }
                   console.warn('Supabase 未配置：supabase_url / supabase_anon_key');
                   return;
                 }
@@ -218,21 +223,22 @@
                   if(!container) return;
                   if(!list || list.length===0){ container.innerHTML = '<p style="color:#666;">还没有留言，写下你的第一条吧！</p>'; return; }
                   container.innerHTML = '';
-                  list.forEach(function(item){
-                    var div = document.createElement('div');
-                    div.style.padding='10px'; div.style.border='1px solid #e1e4e8'; div.style.borderRadius='6px'; div.style.marginBottom='8px';
-                    var who = item.name ? ('<strong>'+escapeHtml(item.name)+'</strong>') : '<strong>匿名</strong>';
-                    var time = item.created_at ? formatTime(item.created_at) : '';
-                    div.innerHTML = '<div style="font-size:0.95rem; margin-bottom:6px;">'+who+' · <span style="color:#666; font-size:0.85rem;">'+time+'</span></div>' +
-                                  '<div style="white-space:pre-wrap;">'+escapeHtml(item.content)+'</div>';
-                    container.appendChild(div);
-                  });
+                    list.forEach(function(item){
+                      var div = document.createElement('div');
+                      div.className = 'comment-item';
+                      var initials = item.name ? item.name.trim().slice(0,1).toUpperCase() : '匿';
+                      var author = item.name ? escapeHtml(item.name) : '匿名';
+                      var time = item.created_at ? formatTime(item.created_at) : '';
+                      div.innerHTML = '<div class="meta"><div class="meta-left"><div class="avatar-circle">'+initials+'</div><div><div class="comment-author">'+author+'</div><div class="comment-time">'+time+'</div></div></div></div>' +
+                                    '<div class="comment-content">'+escapeHtml(item.content)+'</div>';
+                      container.appendChild(div);
+                    });
                 }
 
                 function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
                 // Load initial
-                load().then(function(res){ if(res && !res.code) render(res); else console.warn(res); }).catch(console.error);
+                load().then(function(res){ if(res && !res.code) render(res); else console.warn(res); }).catch(function(e){ console.error(e); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='加载留言失败'; } });
 
                 // Simple rate limit stored in sessionStorage
                 function allowed(){ try{ var t = sessionStorage.getItem('supabase_last_post_' + slug()) || 0; return (Date.now() - Number(t)) / 1000 > RATE_LIMIT; }catch(e){ return true; } }
@@ -245,12 +251,13 @@
                   if(!text) return alert('留言不能为空');
                   var payload = { slug: slug(), content: text, name: name || null };
                   post(payload).then(function(resp){
-                    if(resp && resp.length){
+                    if(resp && (Array.isArray(resp) ? resp.length : resp.id || resp[0])){
                       mark(); document.getElementById('supabase-comment-input').value=''; document.getElementById('supabase-comment-name').value='';
-                      // prepend
+                      var statusEl = document.getElementById('supabase-comment-status'); if(statusEl){ statusEl.textContent = '提交成功'; setTimeout(function(){ statusEl.textContent = '留言将匿名保存到远程数据库。'; }, 2000); }
+                      // reload
                       load().then(function(res){ if(res && !res.code) render(res); });
-                    }else{ console.warn(resp); alert('提交失败'); }
-                  }).catch(function(err){ console.error(err); alert('提交失败'); });
+                    }else{ console.warn('submit response', resp); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='提交失败（服务器返回异常）'; } }
+                  }).catch(function(err){ console.error(err); var errEl = document.getElementById('supabase-comment-error'); if(errEl){ errEl.style.display='block'; errEl.textContent='提交失败（网络或权限问题）'; } });
                 });
 
               })();
