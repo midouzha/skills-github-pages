@@ -32,5 +32,13 @@ utterances_issue_term: "pathname"
 # 可选：主题，参考 https://utteranc.es/ 可设置如 github-light, github-dark, preferred-color-scheme
 utterances_theme: "github-light"
 
-# 评论系统选择：可选值 "utterances" 或 "giscus"。默认不启用评论（为空）。
-comments_system: "utterances" # "utterances" or "giscus" or ""
+# 评论系统选择：可选值 "utterances"、"supabase" 或空（不启用评论）。
+comments_system: "supabase" # "utterances" or "supabase" or ""
+
+# Supabase 评论配置（远程保存、匿名写入）
+# 在 Supabase 控制台创建 project 后，填入下面两个字段：
+supabase_url: "https://wygndhtvmvtvonfzfzuu.supabase.co"       # 形如 https://xxxx.supabase.co
+supabase_anon_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5Z25kaHR2bXZ0dm9uZnpmenV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjk2MTYsImV4cCI6MjA3MTcwNTYxNn0.0YNnZGXWDp57q3juXQVUz9i-V74nh0F5BsBSYFy5iP8"  # Supabase 项目 Settings -> API -> anon public key
+supabase_table: "comments" # 在 Supabase 中创建的表名，默认 comments
+supabase_rate_limit_seconds: 15 # 前端简单防刷限制（秒）
+

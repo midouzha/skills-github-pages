@@ -89,6 +89,173 @@
               })();
             </script>
             {%- endif -%}
+          {%- elsif site.comments_system == 'local' -%}
+            <div id="comments" style="margin-top: 2rem;">
+              <h3>留言（本地保存，仅在此设备可见）</h3>
+              <div id="local-comments">
+                <div id="local-comment-list" style="margin-bottom:1rem;"></div>
+                <textarea id="local-comment-input" rows="4" style="width:100%;" placeholder="在此输入留言..."></textarea>
+                <div style="margin-top:0.5rem; display:flex; gap:8px;">
+                  <input id="local-comment-name" placeholder="署名（可选）" style="flex:0 0 200px;" />
+                  <button id="local-comment-submit">提交留言</button>
+                  <button id="local-comment-clear">清空所有本地留言</button>
+                </div>
+                <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">仅保存在你当前浏览器的本地存储中，别人访问不会看到。</p>
+              </div>
+            </div>
+
+            <script>
+              (function(){
+                var storageKey = 'local_comments_' + location.pathname;
+                function loadComments(){
+                  try{
+                    var raw = localStorage.getItem(storageKey);
+                    return raw ? JSON.parse(raw) : [];
+                  }catch(e){ return []; }
+                }
+                function saveComments(arr){
+                  try{ localStorage.setItem(storageKey, JSON.stringify(arr)); }catch(e){}
+                }
+                function formatTime(ts){
+                  var d = new Date(ts);
+                  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+                }
+                function render(){
+                  var list = loadComments();
+                  var container = document.getElementById('local-comment-list');
+                  if(!container) return;
+                  if(list.length === 0){ container.innerHTML = '<p style="color:#666;">还没有留言，写下你的第一条吧！</p>'; return; }
+                  container.innerHTML = '';
+                  list.forEach(function(item, idx){
+                    var div = document.createElement('div');
+                    div.style.padding = '10px';
+                    div.style.border = '1px solid #e1e4e8';
+                    div.style.borderRadius = '6px';
+                    div.style.marginBottom = '8px';
+                    var who = item.name ? ('<strong>'+escapeHtml(item.name)+'</strong>') : '<strong>匿名</strong>';
+                    div.innerHTML = '<div style="font-size:0.95rem; margin-bottom:6px;">'+who+' · <span style="color:#666; font-size:0.85rem;">'+formatTime(item.ts)+'</span></div>' +
+                                  '<div style="white-space:pre-wrap;">'+escapeHtml(item.text)+'</div>' +
+                                  '<div style="margin-top:6px;"><button data-idx="'+idx+'" class="local-delete">删除</button></div>';
+                    container.appendChild(div);
+                  });
+                  Array.from(container.querySelectorAll('.local-delete')).forEach(function(btn){
+                    btn.addEventListener('click', function(){
+                      var i = Number(this.getAttribute('data-idx'));
+                      var arr = loadComments(); arr.splice(i,1); saveComments(arr); render();
+                    });
+                  });
+                }
+                function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+                document.getElementById('local-comment-submit').addEventListener('click', function(){
+                  var text = document.getElementById('local-comment-input').value.trim();
+                  var name = document.getElementById('local-comment-name').value.trim();
+                  if(!text) return alert('留言不能为空');
+                  var arr = loadComments();
+                  arr.unshift({name: name, text: text, ts: Date.now()});
+                  saveComments(arr); document.getElementById('local-comment-input').value = '';
+                  render();
+                });
+                document.getElementById('local-comment-clear').addEventListener('click', function(){
+                  if(!confirm('确认清空本地所有留言？此操作不可恢复。')) return;
+                  localStorage.removeItem(storageKey); render();
+                });
+                render();
+              })();
+            </script>
+          {%- elsif site.comments_system == 'supabase' -%}
+            <div id="comments" style="margin-top: 2rem;">
+              <h3>留言</h3>
+              <div id="supabase-comments">
+                <div id="supabase-comment-list" style="margin-bottom:1rem;"></div>
+                <textarea id="supabase-comment-input" rows="4" style="width:100%;" placeholder="在此输入留言..."></textarea>
+                <div style="margin-top:0.5rem; display:flex; gap:8px;">
+                  <input id="supabase-comment-name" placeholder="署名（可选）" style="flex:0 0 200px;" />
+                  <button id="supabase-comment-submit">提交留言</button>
+                </div>
+                <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">留言将匿名保存到远程数据库。</p>
+              </div>
+            </div>
+
+            <script>
+              (function(){
+                var SUPABASE_URL = '{{ site.supabase_url | default: "" }}';
+                var SUPABASE_ANON_KEY = '{{ site.supabase_anon_key | default: "" }}';
+                var TABLE = '{{ site.supabase_table | default: "comments" }}';
+                var RATE_LIMIT = Number('{{ site.supabase_rate_limit_seconds | default: 15 }}') || 15;
+                if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
+                  console.warn('Supabase 未配置：supabase_url / supabase_anon_key');
+                  return;
+                }
+
+                function api(path, method, body){
+                  return fetch(SUPABASE_URL + path, {
+                    method: method,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'apikey': SUPABASE_ANON_KEY,
+                      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    },
+                    body: body ? JSON.stringify(body) : undefined
+                  }).then(function(r){ return r.json(); });
+                }
+
+                function slug(){ return location.pathname; }
+
+                function load(){
+                  var q = '/rest/v1/' + TABLE + '?select=*&slug=eq.'+encodeURIComponent(slug())+'&order=created_at.desc';
+                  return api(q, 'GET');
+                }
+
+                function post(obj){
+                  var q = '/rest/v1/' + TABLE;
+                  return api(q, 'POST', obj);
+                }
+
+                function formatTime(ts){ var d = new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+
+                function render(list){
+                  var container = document.getElementById('supabase-comment-list');
+                  if(!container) return;
+                  if(!list || list.length===0){ container.innerHTML = '<p style="color:#666;">还没有留言，写下你的第一条吧！</p>'; return; }
+                  container.innerHTML = '';
+                  list.forEach(function(item){
+                    var div = document.createElement('div');
+                    div.style.padding='10px'; div.style.border='1px solid #e1e4e8'; div.style.borderRadius='6px'; div.style.marginBottom='8px';
+                    var who = item.name ? ('<strong>'+escapeHtml(item.name)+'</strong>') : '<strong>匿名</strong>';
+                    var time = item.created_at ? formatTime(item.created_at) : '';
+                    div.innerHTML = '<div style="font-size:0.95rem; margin-bottom:6px;">'+who+' · <span style="color:#666; font-size:0.85rem;">'+time+'</span></div>' +
+                                  '<div style="white-space:pre-wrap;">'+escapeHtml(item.content)+'</div>';
+                    container.appendChild(div);
+                  });
+                }
+
+                function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+                // Load initial
+                load().then(function(res){ if(res && !res.code) render(res); else console.warn(res); }).catch(console.error);
+
+                // Simple rate limit stored in sessionStorage
+                function allowed(){ try{ var t = sessionStorage.getItem('supabase_last_post_' + slug()) || 0; return (Date.now() - Number(t)) / 1000 > RATE_LIMIT; }catch(e){ return true; } }
+                function mark(){ try{ sessionStorage.setItem('supabase_last_post_' + slug(), String(Date.now())); }catch(e){} }
+
+                document.getElementById('supabase-comment-submit').addEventListener('click', function(){
+                  if(!allowed()){ return alert('请稍后再发，防止刷屏'); }
+                  var text = document.getElementById('supabase-comment-input').value.trim();
+                  var name = document.getElementById('supabase-comment-name').value.trim();
+                  if(!text) return alert('留言不能为空');
+                  var payload = { slug: slug(), content: text, name: name || null };
+                  post(payload).then(function(resp){
+                    if(resp && resp.length){
+                      mark(); document.getElementById('supabase-comment-input').value=''; document.getElementById('supabase-comment-name').value='';
+                      // prepend
+                      load().then(function(res){ if(res && !res.code) render(res); });
+                    }else{ console.warn(resp); alert('提交失败'); }
+                  }).catch(function(err){ console.error(err); alert('提交失败'); });
+                });
+
+              })();
+            </script>
+          {%- endif -%}
           {%- endif -%}
         {%- endif -%}
       </div>
