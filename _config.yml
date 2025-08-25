@@ -23,3 +23,30 @@ highlighter: rouge
 # 构建设置
 safe: true
 incremental: false
+
+# Utterances (基于 GitHub Issues 的评论系统)
+# 在部署前把下面的仓库替换为 形如 `用户名/仓库名`，例如 `midouzha/skills-github-pages`
+utterances_repo: "" # e.g. "owner/repo"
+# 可选：issue 映射策略（url, pathname, title, issue-number），默认 pathname
+utterances_issue_term: "pathname"
+# 可选：主题，参考 https://utteranc.es/ 可设置如 github-light, github-dark, preferred-color-scheme
+utterances_theme: "github-light"
+
+# 评论系统选择：可选值 "utterances" 或 "giscus"。默认不启用评论（为空）。
+comments_system: "giscus" # "utterances" or "giscus" or ""
+
+# giscus 配置（https://giscus.app/）
+# 已为你的仓库设置 repo（可在部署后立即工作，前提是仓库启用了 Discussions）
+giscus_repo: "midouzha/skills-github-pages"
+giscus_repo_id: ""       # 可选：仓库 id（在 GitHub API 中获取）
+giscus_category: ""      # 可选：discussion 分类名称（如果留空，giscus 会提示选择）
+giscus_category_id: ""   # 可选：discussion 分类 id（推荐填写以避免自动创建）
+giscus_mapping: "pathname" # 映射策略：url, pathname, title, og:title, number
+giscus_reactions_enabled: "1" # 是否启用 reactions（1/0）
+giscus_emit_metadata: "0"     # 是否发送页面元数据给 giscus（1/0）
+giscus_input_position: "bottom" # input 位置：top 或 bottom
+giscus_theme: "preferred_color_scheme"         # 主题，例如 light, dark, preferred_color_scheme
+giscus_lang: "zh-CN"          # 语言
+
+# 可选：如果你想使用自定义 OAuth 客户端 id（通常不需要），可以填入：
+giscus_client_id: ""

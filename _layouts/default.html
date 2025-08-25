@@ -37,6 +37,60 @@
     <div class="page-content">
       <div class="wrapper">
         {{ content }}
+        
+        {%- comment -%}
+        评论系统（支持 giscus 与 utterances），仅在文章页面显示。当 site.comments_system 为 "giscus" 时使用 giscus 配置。
+        在 `_config.yml` 中设置：comments_system: "giscus" 或 "utterances"
+        {%- endcomment -%}
+
+        {%- if page.date and page.path contains '_posts' -%}
+          {%- if site.comments_system == 'giscus' -%}
+            {%- if site.giscus_repo and site.giscus_repo != "" -%}
+            <div id="comments" style="margin-top: 2rem;">
+              <h3>留言</h3>
+              <div id="giscus-container">
+                <script src="https://giscus.app/client.js"
+                  async
+                  data-repo="{{ site.giscus_repo | escape }}"
+                  {% if site.giscus_repo_id and site.giscus_repo_id != "" %}data-repo-id="{{ site.giscus_repo_id | escape }}"{% endif %}
+                  {% if site.giscus_category and site.giscus_category != "" %}data-category="{{ site.giscus_category | escape }}"{% endif %}
+                  {% if site.giscus_category_id and site.giscus_category_id != "" %}data-category-id="{{ site.giscus_category_id | escape }}"{% endif %}
+                  data-mapping="{{ site.giscus_mapping | default: 'pathname' }}"
+                  data-reactions-enabled="{{ site.giscus_reactions_enabled | default: '1' }}"
+                  data-emit-metadata="{{ site.giscus_emit_metadata | default: '0' }}"
+                  data-input-position="{{ site.giscus_input_position | default: 'bottom' }}"
+                  data-theme="{{ site.giscus_theme | default: 'light' }}"
+                  data-lang="{{ site.giscus_lang | default: 'zh-CN' }}"
+                  crossorigin="anonymous"
+                  ></script>
+              </div>
+            </div>
+            {%- endif -%}
+          {%- elsif site.comments_system == 'utterances' -%}
+            {%- if site.utterances_repo and site.utterances_repo != "" -%}
+            <div id="comments" style="margin-top: 2rem;">
+              <h3>留言</h3>
+              <div id="utterances-container"></div>
+            </div>
+
+            <script>
+              (function() {
+                var repo = '{{ site.utterances_repo | escape }}';
+                if (!repo) return;
+                var script = document.createElement('script');
+                script.src = 'https://utteranc.es/client.js';
+                script.async = true;
+                script.setAttribute('repo', repo);
+                script.setAttribute('issue-term', '{{ site.utterances_issue_term | default: "pathname" }}');
+                script.setAttribute('theme', '{{ site.utterances_theme | default: "github-light" }}');
+                script.crossOrigin = 'anonymous';
+                var container = document.getElementById('utterances-container');
+                if (container) container.appendChild(script);
+              })();
+            </script>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endif -%}
       </div>
     </div>
   </main>
