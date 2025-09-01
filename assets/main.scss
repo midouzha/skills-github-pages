@@ -39,6 +39,14 @@ img {
   border-top: none;
   box-shadow: 0 2px 20px rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+/* 文章内容美化字体 */
+.page-content, .post-content, .wrapper {
+  font-family: 'ZCOOL KuaiLe', '微软雅黑', 'Arial', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #222;
+}
   padding: 15px 0;
 }
 

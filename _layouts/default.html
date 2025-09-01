@@ -14,6 +14,8 @@
   {% if jekyll.environment == 'production' and site.google_analytics %}
     {% include google-analytics.html %}
   {% endif %}
+    <!-- Google Fonts: ZCOOL KuaiLe -->
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -41,6 +43,32 @@
       </div>
     </div>
   </main>
+
+    <!-- 爱心鼠标跟随特效 -->
+    <script>
+      document.addEventListener('mousemove', function(e) {
+        const heart = document.createElement('div');
+        heart.innerHTML = '❤';
+        heart.style.position = 'fixed';
+        heart.style.left = (e.clientX - 10) + 'px';
+        heart.style.top = (e.clientY - 10) + 'px';
+        heart.style.fontSize = '22px';
+        heart.style.color = '#e25555';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = 9999;
+        heart.style.transition = 'opacity 0.8s, transform 0.8s';
+        heart.style.opacity = '1';
+        heart.style.transform = 'scale(1)';
+        document.body.appendChild(heart);
+        setTimeout(() => {
+          heart.style.opacity = '0';
+          heart.style.transform = 'scale(2)';
+        }, 50);
+        setTimeout(() => {
+          heart.remove();
+        }, 800);
+      });
+    </script>
 
   <footer class="site-footer">
     <div class="wrapper">
