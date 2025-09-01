@@ -61,13 +61,12 @@ html {
 }
 
 body {
-  /* 精美刺绣风格紫色背景+小野花图案 */
+  /* 刺绣风格紫色渐变+小野花SVG背景 */
   background:
-    linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 25%, #ddd6fe 50%, #c4b5fd 75%, #a78bfa 100%),
-    url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="dots" patternUnits="userSpaceOnUse" width="40" height="40"><circle cx="20" cy="20" r="1" fill="%23a855f7" opacity="0.3"/></pattern></defs><rect width="200" height="200" fill="url(%23dots)"/><g opacity="0.6"><circle cx="50" cy="40" r="8" fill="none" stroke="%23a855f7" stroke-width="1.5"/><path d="M46 40 L54 40 M50 36 L50 44" stroke="%23a855f7" stroke-width="1"/><circle cx="150" cy="60" r="6" fill="%23c084fc" opacity="0.7"/><ellipse cx="145" cy="55" rx="2" ry="4" fill="%23a855f7" opacity="0.5"/><ellipse cx="155" cy="55" rx="2" ry="4" fill="%23a855f7" opacity="0.5"/><circle cx="80" cy="120" r="5" fill="%23ddd6fe"/><path d="M76 120 Q80 115 84 120 Q80 125 76 120" fill="%23a855f7" opacity="0.4"/><circle cx="160" cy="140" r="7" fill="none" stroke="%23c084fc" stroke-width="1"/><circle cx="160" cy="140" r="3" fill="%23a855f7" opacity="0.6"/><ellipse cx="30" cy="160" rx="4" ry="2" fill="%23ddd6fe"/><ellipse cx="25" cy="165" rx="3" ry="1.5" fill="%23c084fc" opacity="0.7"/><ellipse cx="35" cy="165" rx="3" ry="1.5" fill="%23c084fc" opacity="0.7"/><path d="M120 30 Q125 25 130 30 Q125 35 120 30" fill="%23a855f7" opacity="0.5"/><circle cx="125" cy="30" r="2" fill="%23ffffff" opacity="0.8"/></g></svg>');
+    linear-gradient(135deg, #e6d6f7 0%, #c3a3e6 100%),
+    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" stroke="%23a259e6" stroke-width="2" fill="none"/><g><circle cx="30" cy="30" r="6" fill="%23b47fe6"/><circle cx="90" cy="30" r="4" fill="%23e6b3f7"/><circle cx="60" cy="90" r="5" fill="%23c3a3e6"/><ellipse cx="80" cy="80" rx="3" ry="6" fill="%23e6d6f7"/><ellipse cx="40" cy="80" rx="2" ry="4" fill="%23a259e6"/></g></svg>');
   background-repeat: repeat;
-  background-size: 400px 400px;
-  background-attachment: fixed;
+  background-size: 320px 320px;
 }
 
 h1, h2, h3, h4, h5, h6, p, ul, ol, li, blockquote {
