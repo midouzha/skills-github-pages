@@ -46,27 +46,34 @@
 
     <!-- 爱心鼠标跟随特效 -->
     <script>
+      let lastHeartTime = 0;
       document.addEventListener('mousemove', function(e) {
+        const now = Date.now();
+        // 降低数量，限制 120ms 生成一次
+        if (now - lastHeartTime < 120) return;
+        lastHeartTime = now;
         const heart = document.createElement('div');
         heart.innerHTML = '❤';
         heart.style.position = 'fixed';
         heart.style.left = (e.clientX - 10) + 'px';
         heart.style.top = (e.clientY - 10) + 'px';
         heart.style.fontSize = '22px';
-        heart.style.color = '#e25555';
+        heart.style.color = '#a259e6'; // 紫色
         heart.style.pointerEvents = 'none';
         heart.style.zIndex = 9999;
-        heart.style.transition = 'opacity 0.8s, transform 0.8s';
+        heart.style.textShadow = '0 2px 8px #a259e6, 0 0px 2px #fff';
+        heart.style.transition = 'opacity 1s, transform 1s';
         heart.style.opacity = '1';
-        heart.style.transform = 'scale(1)';
+        heart.style.transform = 'scale(1) translateY(0)';
         document.body.appendChild(heart);
+        // 添加动画：上升、放大、淡出
         setTimeout(() => {
           heart.style.opacity = '0';
-          heart.style.transform = 'scale(2)';
-        }, 50);
+          heart.style.transform = 'scale(1.8) translateY(-40px)';
+        }, 80);
         setTimeout(() => {
           heart.remove();
-        }, 800);
+        }, 1000);
       });
     </script>
 
