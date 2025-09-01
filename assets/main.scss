@@ -1,3 +1,50 @@
+.post-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(162,89,230,0.08);
+}
+
+.post-content h1, .post-content h2, .post-content h3 {
+  margin-top: 2.2em;
+  margin-bottom: 1em;
+  font-weight: bold;
+  color: #a259e6;
+}
+.post-content h4, .post-content h5, .post-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  color: #7c3fe6;
+}
+.post-content p {
+  margin: 1.1em 0;
+  text-indent: 2em;
+}
+.post-content ul, .post-content ol {
+  margin: 1em 0 1em 2em;
+  padding-left: 1.2em;
+}
+.post-content li {
+  margin-bottom: 0.5em;
+  line-height: 1.7;
+}
+.post-content blockquote {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background: #f6f0fa;
+  border-left: 4px solid #a259e6;
+  color: #6d4ca3;
+  font-style: italic;
+}
+.post-content img {
+  display: block;
+  margin: 2em auto;
+  max-width: 90%;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(162,89,230,0.12);
+}
 ---
 ---
 
