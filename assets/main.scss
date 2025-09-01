@@ -8,8 +8,18 @@
   box-sizing: border-box;
 }
 
+
 html {
   font-size: 16px;
+}
+
+body {
+  /* 刺绣风格紫色渐变+小野花SVG背景 */
+  background:
+    linear-gradient(135deg, #e6d6f7 0%, #c3a3e6 100%),
+    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" stroke="%23a259e6" stroke-width="2" fill="none"/><g><circle cx="30" cy="30" r="6" fill="%23b47fe6"/><circle cx="90" cy="30" r="4" fill="%23e6b3f7"/><circle cx="60" cy="90" r="5" fill="%23c3a3e6"/><ellipse cx="80" cy="80" rx="3" ry="6" fill="%23e6d6f7"/><ellipse cx="40" cy="80" rx="2" ry="4" fill="%23a259e6"/></g></svg>');
+  background-repeat: repeat;
+  background-size: 320px 320px;
 }
 
 h1, h2, h3, h4, h5, h6, p, ul, ol, li, blockquote {
