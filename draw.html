@@ -1,0 +1,326 @@
+---
+layout: null
+permalink: /draw/
+title: 抽签
+---
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽签</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #a855f7;
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .option-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .add-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        li {
+            background: white;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+            transform: scale(1.1);
+        }
+
+        .draw-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .draw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        .draw-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: floatUp 3s ease-in infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← 返回首页</a>
+    <div class="container">
+        <h1>✨ 吃什么 ✨</h1>
+        <div class="input-group">
+            <input type="text" id="optionInput" class="option-input" placeholder="输入选项 (Enter添加)..." onkeypress="handleKeyPress(event)">
+            <button class="add-btn" onclick="addOption()">添加</button>
+        </div>
+        <ul id="optionList"></ul>
+        <button class="draw-btn" onclick="drawLottery()">开始抽签</button>
+        <div class="result" id="result"></div>
+    </div>
+    <div class="hearts" id="hearts"></div>
+
+    <script>
+        let options = [];
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addOption();
+            }
+        }
+
+        function addOption() {
+            const input = document.getElementById('optionInput');
+            const value = input.value.trim();
+            if (value) {
+                options.push(value);
+                renderOptions();
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function removeOption(index) {
+            options.splice(index, 1);
+            renderOptions();
+        }
+
+        function renderOptions() {
+            const list = document.getElementById('optionList');
+            list.innerHTML = '';
+            options.forEach((opt, index) => {
+                const li = document.createElement('li');
+                li.textContent = opt;
+                const btn = document.createElement('button');
+                btn.innerHTML = '&times;';
+                btn.className = 'remove-btn';
+                btn.title = '删除';
+                btn.onclick = () => removeOption(index);
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+        }
+
+        function drawLottery() {
+            if (options.length === 0) {
+                alert('请先添加选项');
+                return;
+            }
+
+            const container = document.querySelector('.container');
+            const resultDiv = document.getElementById('result');
+            
+            // 重置结果
+            resultDiv.textContent = '抽签中...';
+            resultDiv.style.opacity = '0.5';
+            
+            container.classList.add('shake');
+
+            setTimeout(() => {
+                container.classList.remove('shake');
+                const randomIndex = Math.floor(Math.random() * options.length);
+                const result = options[randomIndex];
+                
+                resultDiv.style.opacity = '1';
+                resultDiv.innerHTML = `🎉 抽到：${result} 🎉`;
+
+                // 添加爱心动画
+                createHearts();
+            }, 1000); // 摇晃1秒后显示结果
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            heartsContainer.innerHTML = ''; // 清空之前的爱心
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = ['❤️', '✨', '🎉', '🌟'][Math.floor(Math.random() * 4)];
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDelay = `${Math.random() * 0.5}s`;
+                heart.style.fontSize = `${20 + Math.random() * 20}px`;
+                heartsContainer.appendChild(heart);
+
+                // 移除动画结束的爱心
+                setTimeout(() => heart.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>
