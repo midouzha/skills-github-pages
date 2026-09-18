@@ -26,6 +26,10 @@
 *.sql
 *.sqlite
 
+# 地图构建缓存与本地预览（由 tools/build_china_map.py 生成）#
+###########################################################
+tools/.cache/
+
 # OS generated files #
 ######################
 .DS_Store
