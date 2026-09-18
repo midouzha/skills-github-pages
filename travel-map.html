@@ -82,6 +82,52 @@ title: 旅行地图
             text-shadow: 0 1px 6px rgba(124, 63, 230, 0.5);
         }
 
+        /* ---------- 我的 / 我们的 两张地图切换 ---------- */
+        .map-switch {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 18px;
+            padding: 5px;
+            margin-bottom: 14px;
+            box-shadow: 0 10px 22px -16px rgba(80, 40, 140, 0.7);
+        }
+        .map-tab {
+            flex: 1 1 160px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #6b5c86;
+            background: transparent;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 10px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .map-tab:hover { color: var(--primary-deep); }
+        .map-tab.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 8px 18px -10px rgba(80, 40, 140, 0.75);
+        }
+        .tab-count {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-color), var(--pink));
+            border-radius: 99px;
+            padding: 1px 8px;
+            min-width: 20px;
+            text-align: center;
+        }
+        .tab-count:empty { display: none; }
+
         /* ---------- 顶部统计 ---------- */
         .stats-card {
             background: var(--glass-bg);
@@ -397,8 +443,19 @@ title: 旅行地图
 
     <div class="page">
         <div class="page-head">
-            <h1>🗺️ 我的旅行地图</h1>
-            <p>点亮走过的每一寸土地，记录想去的每个远方</p>
+            <h1>🗺️ 旅行地图</h1>
+            <p id="pageSubtitle">点亮我走过的每一寸土地</p>
+        </div>
+
+        <div class="map-switch" id="mapSwitch">
+            <button class="map-tab active" data-map="mine" aria-pressed="true">
+                <span>🧳 我的旅行地图</span>
+                <span class="tab-count" data-count="mine"></span>
+            </button>
+            <button class="map-tab" data-map="ours" aria-pressed="false">
+                <span>💕 我们的旅行地图</span>
+                <span class="tab-count" data-count="ours"></span>
+            </button>
         </div>
 
         <div class="stats-card">
@@ -446,8 +503,23 @@ title: 旅行地图
     <script>
     (function () {
         var DATA = window.CHINA_MAP_DATA;
-        var STORE_KEY = 'travel-map-progress-v1';
         var REGION_ORDER = ['华北', '东北', '华东', '华中', '华南', '西南', '西北'];
+
+        // 两张地图各存各的，互不影响
+        var MAPS = {
+            mine: {
+                label: '我的旅行地图',
+                store: 'travel-map-mine-v1',
+                legacy: 'travel-map-progress-v1',   // 早期版本只有一份数据，迁移到"我的"
+                subtitle: '点亮我走过的每一寸土地'
+            },
+            ours: {
+                label: '我们的旅行地图',
+                store: 'travel-map-ours-v1',
+                subtitle: '记录我们一起走过的路 💕'
+            }
+        };
+        var CURRENT_KEY = 'travel-map-current-map';   // 记住上次看的是哪张
         var MODE_TEXT = {
             visited: '点击省份即可点亮 ✅',
             wish: '点击省份加入心愿单 💗'
@@ -461,8 +533,24 @@ title: 旅行地图
         var chips = {};   // adcode -> 清单按钮
 
         var mode = 'visited';
-        var marks = loadMarks();
+        var stores = {
+            mine: readStore(MAPS.mine.store),
+            ours: readStore(MAPS.ours.store)
+        };
+        var current = readCurrentKey();
         var names = {};   // adcode -> 省份简称，提示用
+
+        // 当前正在编辑的那份记录
+        function marks() { return stores[current]; }
+
+        function readCurrentKey() {
+            try {
+                var saved = window.localStorage.getItem(CURRENT_KEY);
+                return MAPS[saved] ? saved : 'mine';
+            } catch (e) {
+                return 'mine';
+            }
+        }
 
         if (!DATA || !DATA.provinces) {
             mapCard.innerHTML = '<p style="padding:40px;text-align:center;color:#7a6b8a">地图数据没加载出来，刷新试试～</p>';
@@ -471,9 +559,9 @@ title: 旅行地图
 
         /* ---------------- 数据存取 ---------------- */
         // localStorage 在隐私模式或被禁用时会抛错，这里全部兜住，退化成"不保存"
-        function loadMarks() {
+        function readStore(key) {
             try {
-                var raw = window.localStorage.getItem(STORE_KEY);
+                var raw = window.localStorage.getItem(key);
                 var parsed = raw ? JSON.parse(raw) : null;
                 return parsed && typeof parsed === 'object' ? parsed : {};
             } catch (e) {
@@ -481,11 +569,25 @@ title: 旅行地图
             }
         }
 
-        function saveMarks() {
+        function writeStore(key, value) {
             try {
-                window.localStorage.setItem(STORE_KEY, JSON.stringify(marks));
+                window.localStorage.setItem(key, JSON.stringify(value));
             } catch (e) { /* 存不了就算了，不影响本次浏览 */ }
         }
+
+        function saveMarks() {
+            writeStore(MAPS[current].store, stores[current]);
+        }
+
+        // 老版本只有一份数据，原样挪到"我的"下面，之前的记录不会丢
+        function migrateLegacy() {
+            if (Object.keys(stores.mine).length) return;
+            var legacy = readStore(MAPS.mine.legacy);
+            if (!Object.keys(legacy).length) return;
+            stores.mine = legacy;
+            writeStore(MAPS.mine.store, legacy);
+        }
+        migrateLegacy();
 
         function today() {
             var d = new Date();
@@ -591,7 +693,7 @@ title: 旅行地图
                 tooltip.style.top = (e.clientY - box.top) + 'px';
             }
             el.addEventListener('mouseenter', function (e) {
-                var mark = marks[province.id];
+                var mark = marks()[province.id];
                 var status = mark
                     ? (mark.s === 'visited' ? '✅ 已点亮 · ' + mark.t : '💗 想去 · ' + mark.t)
                     : '还没点亮 · 点一下试试';
@@ -637,36 +739,52 @@ title: 旅行地图
 
         /* ---------------- 点亮 / 取消 ---------------- */
         function toggle(id) {
-            var mark = marks[id];
+            var store = marks();
+            var mark = store[id];
             if (mark && mark.s === mode) {
-                delete marks[id];
+                delete store[id];
             } else {
-                marks[id] = { s: mode, t: today() };
+                store[id] = { s: mode, t: today() };
             }
             saveMarks();
             sync();
 
             var el = paths[id];
-            if (el && marks[id]) {
+            var saved = store[id];
+            if (el && saved) {
                 el.classList.remove('pop');
                 void el.offsetWidth;   // 强制重排，让动画能连着播
                 el.classList.add('pop');
             }
-            if (marks[id]) {
-                showToast((marks[id].s === 'visited' ? '✅ 点亮了 ' : '💗 加入了 ') + (names[id] || '') +
-                          (marks[id].s === 'visited' ? '' : ' 心愿单'));
+
+            // 切到"我们的"时提示里带上主语，免得点错地图
+            var owner = current === 'ours' ? '我们' : '我';
+            if (saved) {
+                showToast(saved.s === 'visited'
+                    ? '✅ ' + owner + '点亮了 ' + (names[id] || '')
+                    : '💗 ' + owner + '想去 ' + (names[id] || ''));
             } else {
                 showToast('已取消 ' + (names[id] || ''));
             }
         }
 
         /* ---------------- 状态同步 ---------------- */
+        function countVisited(key) {
+            var n = 0;
+            DATA.provinces.forEach(function (p) {
+                var mark = stores[key][p.id];
+                if (mark && mark.s === 'visited') n++;
+            });
+            return n;
+        }
+
         function sync() {
+            var store = marks();
             var visited = 0, wish = 0;
             var regionVisited = {};
 
             DATA.provinces.forEach(function (p) {
-                var mark = marks[p.id];
+                var mark = store[p.id];
                 var status = mark ? mark.s : '';
                 var el = paths[p.id];
                 var chip = chips[p.id];
@@ -704,7 +822,36 @@ title: 旅行地图
                 var count = regionVisited[region] || 0;
                 el.textContent = count ? '已点亮 ' + count + ' 个' : '';
             });
+
+            // 顶部文案、页签状态，以及两个页签上的进度角标
+            document.getElementById('pageSubtitle').textContent = MAPS[current].subtitle;
+            Array.prototype.forEach.call(document.querySelectorAll('.map-tab'), function (tab) {
+                var isActive = tab.getAttribute('data-map') === current;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            });
+            Array.prototype.forEach.call(document.querySelectorAll('.tab-count'), function (badge) {
+                var n = countVisited(badge.getAttribute('data-count'));
+                badge.textContent = n ? n : '';
+            });
         }
+
+        /* ---------------- 切换地图 ---------------- */
+        function switchMap(key) {
+            if (!MAPS[key] || key === current) return;
+            current = key;
+            try {
+                window.localStorage.setItem(CURRENT_KEY, key);
+            } catch (e) { /* 记不住就算了，下次默认回"我的" */ }
+            sync();
+            showToast(Object.keys(stores[key]).length
+                ? '已切到「' + MAPS[key].label + '」'
+                : '「' + MAPS[key].label + '」还是空的，点省份开始点亮吧');
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll('.map-tab'), function (tab) {
+            tab.addEventListener('click', function () { switchMap(tab.getAttribute('data-map')); });
+        });
 
         var toastTimer = null;
         function showToast(text) {
@@ -728,8 +875,9 @@ title: 旅行地图
 
         /* ---------------- 备份 / 恢复 / 重置 ---------------- */
         // 进度只存在本机浏览器里，换设备或清缓存就会丢，所以给个备份码
+        // 备份码里两张地图一起带上，恢复时也是一次搞定
         document.getElementById('exportBtn').addEventListener('click', function () {
-            var code = btoa(JSON.stringify(marks));
+            var code = btoa(JSON.stringify({ v: 2, maps: { mine: stores.mine, ours: stores.ours } }));
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(code).then(function () {
                     showToast('备份码已复制到剪贴板');
@@ -751,25 +899,32 @@ title: 旅行地图
                 showToast('备份码看不懂，再检查一下～');
                 return;
             }
-            var clean = {};
-            DATA.provinces.forEach(function (p) {
-                var mark = parsed[p.id];
-                if (mark && (mark.s === 'visited' || mark.s === 'wish')) {
-                    clean[p.id] = { s: mark.s, t: String(mark.t || today()) };
-                }
+            // 新备份码是 {v:2, maps:{mine,ours}}；老备份码本身就是一份记录，按"我的"恢复
+            var incoming = parsed && parsed.maps ? parsed.maps : { mine: parsed };
+            var total = 0;
+            Object.keys(MAPS).forEach(function (key) {
+                if (!(key in incoming)) return;   // 备份里没这张地图，就保持原样不动
+                var clean = {};
+                DATA.provinces.forEach(function (p) {
+                    var mark = (incoming[key] || {})[p.id];
+                    if (mark && (mark.s === 'visited' || mark.s === 'wish')) {
+                        clean[p.id] = { s: mark.s, t: String(mark.t || today()) };
+                    }
+                });
+                stores[key] = clean;
+                writeStore(MAPS[key].store, clean);
+                total += Object.keys(clean).length;
             });
-            marks = clean;
-            saveMarks();
             sync();
-            showToast('恢复成功，共 ' + Object.keys(clean).length + ' 条记录');
+            showToast('恢复成功，共 ' + total + ' 条记录');
         });
 
         document.getElementById('resetBtn').addEventListener('click', function () {
-            if (!window.confirm('确定清空所有点亮记录吗？这一步不能撤销。')) return;
-            marks = {};
-            saveMarks();
+            if (!window.confirm('确定清空「' + MAPS[current].label + '」的全部记录吗？另一张地图不受影响。')) return;
+            stores[current] = {};
+            writeStore(MAPS[current].store, {});
             sync();
-            showToast('已全部重置');
+            showToast('已清空「' + MAPS[current].label + '」');
         });
 
         /* ---------------- 启动 ---------------- */
